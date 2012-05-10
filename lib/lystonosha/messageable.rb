@@ -37,8 +37,6 @@ module Lystonosha
       end
     end
 
-    private
-
     def conversations(mailbox)
       Conversation.joins(:receipts).merge(receipts(mailbox)).
                    order('conversations.updated_at DESC').each do |c|
