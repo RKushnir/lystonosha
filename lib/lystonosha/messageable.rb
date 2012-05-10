@@ -21,20 +21,14 @@ module Lystonosha
     end
 
     def deliver_message(message)
-      transaction do
-        return false unless message.save
-        store_message(message, :outbox)
-        Lystonosha::Messageable(message.recipients).each {|r| r.store_message(message, :inbox) }
-        true
-      end
+      message.receipts = Lystonosha::Messageable(message.recipients).
+                          map {|r| r.receipts(:inbox).new }.
+                          push(receipts(:outbox).new)
+      message.save
     end
 
     def trash_message(message)
       message.receipts.merge(receipts).delete_all
-    end
-
-    def store_message(message, mailbox)
-      message.receipts.merge(receipts(mailbox)).create!
     end
 
     def receipts(mailbox = nil)

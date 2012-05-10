@@ -1,6 +1,8 @@
 class Receipt < ActiveRecord::Base
   attr_protected
 
+  belongs_to :message, inverse_of: :receipts
   belongs_to :recipient, polymorphic: true
-  belongs_to :message
+
+  validates :message, :recipient, presence: true
 end
