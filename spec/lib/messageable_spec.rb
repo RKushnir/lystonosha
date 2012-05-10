@@ -32,17 +32,17 @@ describe Lystonosha::Messageable do
 
       it "creates conversation in sender's outbox" do
         sender.deliver_message(message)
-        sender.outbox.last.should == message.conversation
+        sender.outbox.first.should == message.conversation
       end
 
       it "creates conversations in recipients' inboxes" do
         sender.deliver_message(message)
-        recipients.each {|r| r.inbox.last.should == message.conversation }
+        recipients.each {|r| r.inbox.first.should == message.conversation }
       end
 
       it "sets subject for the new conversation" do
         sender.deliver_message(message)
-        sender.outbox.last.subject.should == message.subject
+        sender.outbox.first.subject.should == message.subject
       end
     end
   end
@@ -61,7 +61,7 @@ describe Lystonosha::Messageable do
     end
 
     it "does not remove message from other participants' mailboxes" do
-      participant2.inbox.last.messages.should include(message)
+      participant2.inbox.first.messages.should include(message)
     end
   end
 
