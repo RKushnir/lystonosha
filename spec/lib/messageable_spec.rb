@@ -53,7 +53,7 @@ describe Lystonosha::Messageable do
     end
 
     it "does not remove message from other participants' mailboxes" do
-      participant2.inbox.last.messages(true).should include(message)
+      participant2.inbox.last.messages.should include(message)
     end
   end
 
