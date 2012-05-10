@@ -45,8 +45,10 @@ module Lystonosha
                      c.mailbox = mailbox
                    end
     end
+
+    def conversation(id)
+      Conversation.joins(:receipts).merge(receipts).find(id).tap do |c|
         c.reader = self
-        c.mailbox = mailbox
       end
     end
   end
