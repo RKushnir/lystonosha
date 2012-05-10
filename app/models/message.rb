@@ -11,7 +11,11 @@ class Message < ActiveRecord::Base
 
   def initialize(*)
     super
-    self.conversation ||= build_conversation(subject: subject)
+    if conversation
+      self.recipients = conversation.participants - [sender]
+    else
+      build_conversation(subject: subject)
+    end
   end
 
   def deliver

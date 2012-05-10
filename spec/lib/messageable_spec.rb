@@ -9,10 +9,18 @@ describe Lystonosha::Messageable do
                                          body: 'How are you?') }
 
   describe "#compose_message" do
-    it "builds a message" do
+    it "builds a new message" do
       message.recipients.should == recipients
       message.subject.should == 'Greeting'
       message.body.should == 'How are you?'
+    end
+
+    it "builds a reply to conversation" do
+      message.deliver
+      conversation = message.conversation
+      reply_message = recipients[0].compose_message(conversation: conversation,
+                                                    body: 'How are you?')
+      Set.new(reply_message.recipients).should == Set[sender, *recipients[1..-1]]
     end
   end
 
