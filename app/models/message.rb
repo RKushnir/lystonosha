@@ -15,6 +15,7 @@ class Message < ActiveRecord::Base
       self.recipients = conversation.participants - [sender]
     else
       build_conversation(subject: subject)
+      self.recipients ||= []
     end
   end
 
