@@ -27,6 +27,7 @@ module Lystonosha
       message.save
     end
 
+    # item can be conversation or message
     def trash(item)
       receipts_for_item(item).delete_all
     end
