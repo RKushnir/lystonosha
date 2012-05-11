@@ -51,5 +51,9 @@ module Lystonosha
         c.reader = self
       end
     end
+
+    def message(id)
+      Message.joins(:receipts).merge(receipts).find(id)
+    end
   end
 end
