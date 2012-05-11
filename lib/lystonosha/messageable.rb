@@ -32,7 +32,7 @@ module Lystonosha
     end
 
     def receipts(mailbox = nil)
-      Receipt.where(recipient_id: id, recipient_type: self.class.name).instance_eval do
+      Receipt.for_recipient(self).instance_eval do
         mailbox ? where(mailbox: mailbox) : self
       end
     end
