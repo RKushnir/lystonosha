@@ -5,6 +5,8 @@ class Conversation < ActiveRecord::Base
   has_many :messages, inverse_of: :conversation, order: 'messages.created_at ASC'
   has_many :receipts, through: :messages
 
+  scope :in_reverse_chronological_order, order('conversations.updated_at DESC')
+
   def messages(*)
     return super unless reader
     super.joins(:receipts).merge(reader.receipts(mailbox))
