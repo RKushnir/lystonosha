@@ -7,7 +7,7 @@ class Receipt < ActiveRecord::Base
   validates :message, :recipient, presence: true
 
   scope :for_recipient, ->(recipient) do
-    where(recipient_id: recipient.id, recipient_type: recipient.class.name)
+    where(recipient_id: recipient, recipient_type: recipient.class)
   end
 
   scope :unread, where(read: false)
