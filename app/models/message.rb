@@ -23,8 +23,9 @@ class Message < ActiveRecord::Base
     Lystonosha::Messageable(sender).deliver_message(self)
   end
 
-  def trash(participant)
-    Lystonosha::Messageable(participant).trash_message(self)
+  def trash(recipient)
+    Lystonosha::Messageable(recipient).trash_message(self)
+  end
   end
 
   private
