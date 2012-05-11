@@ -64,6 +64,10 @@ module Lystonosha
       conversations.find(id)
     end
 
+    def unread_messages_count
+      Message.joins(:receipts).merge(receipts.unread).count
+    end
+
     private
 
     def receipts_for_item(item)

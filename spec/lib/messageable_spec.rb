@@ -101,4 +101,16 @@ describe Lystonosha::Messageable do
       end
     end
   end
+
+  describe "#unread_messages_count" do
+    it "gives the count of unread messages" do
+      message = sender.compose_message(recipients: recipients,
+                             subject: 'Greeting',
+                             body: 'How are you?')
+      message.deliver
+      sender.compose_message(conversation: message.conversation,
+                             body: 'How do you do?').deliver
+      recipients[0].unread_messages_count.should == 2
+    end
+  end
 end
