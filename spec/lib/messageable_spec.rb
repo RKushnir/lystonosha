@@ -69,7 +69,7 @@ describe Lystonosha::Messageable do
     let(:participant1) { Lystonosha::Messageable(create :user) }
     let(:participant2) { Lystonosha::Messageable(create :user) }
 
-    it "returns conversations with incoming messages" do
+    it "returns conversations for mailbox" do
       message1 = participant1.compose_message(recipients: [participant2],
                                               subject: 'Greeting',
                                               body: 'How are you?')
