@@ -30,7 +30,9 @@ class Message < ActiveRecord::Base
   private
 
   def subject_or_body_present
-    errors.add(:base, 'Either subject or body should be specified') unless subject? || body?
+    unless subject? || body?
+      errors.add(:base, 'Either subject or body should be specified')
+    end
   end
 
   def at_least_one_recipient_present
