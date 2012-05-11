@@ -73,6 +73,7 @@ module Lystonosha
     def message(id)
       Message.joins(:receipts).merge(receipts).find(id)
     end
+    private
 
     def receipts_for_item(item)
       item.receipts.merge(receipts)
