@@ -18,7 +18,10 @@ class CreateLystonosha < ActiveRecord::Migration
       t.references :message, null: false
       t.boolean :read, default: false
       t.string :mailbox, limit: 10
-      t.timestamps
     end
+
+    add_index :messages, :conversation_id
+    add_index :receipts, [:recipient_id, :recipient_type, :mailbox]
+    add_index :receipts, :message_id
   end
 end

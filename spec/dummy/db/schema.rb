@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120509151340) do
+ActiveRecord::Schema.define(:version => 20120511113537) do
 
   create_table "conversations", :force => true do |t|
     t.string   "subject",    :limit => 200
@@ -29,15 +29,18 @@ ActiveRecord::Schema.define(:version => 20120509151340) do
     t.datetime "updated_at",                     :null => false
   end
 
+  add_index "messages", ["conversation_id"], :name => "index_messages_on_conversation_id"
+
   create_table "receipts", :force => true do |t|
-    t.integer  "recipient_id",                                    :null => false
-    t.string   "recipient_type",                                  :null => false
-    t.integer  "message_id",                                      :null => false
-    t.boolean  "read",                         :default => false
-    t.string   "mailbox",        :limit => 10
-    t.datetime "created_at",                                      :null => false
-    t.datetime "updated_at",                                      :null => false
+    t.integer "recipient_id",                                    :null => false
+    t.string  "recipient_type",                                  :null => false
+    t.integer "message_id",                                      :null => false
+    t.boolean "read",                         :default => false
+    t.string  "mailbox",        :limit => 10
   end
+
+  add_index "receipts", ["message_id"], :name => "index_receipts_on_message_id"
+  add_index "receipts", ["recipient_id", "recipient_type", "mailbox"], :name => "index_receipts_on_recipient_id_and_recipient_type_and_mailbox"
 
   create_table "users", :force => true do |t|
     t.string   "name"
