@@ -23,7 +23,7 @@ module Lystonosha
     def deliver_message(message)
       message.receipts = Lystonosha::Messageable(message.recipients).
                           map {|r| r.receipts(:inbox).new }.
-                          push(receipts(:outbox).new)
+                          push(receipts(:outbox).new(read: true))
       message.save
     end
 
