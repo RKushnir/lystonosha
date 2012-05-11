@@ -20,11 +20,11 @@ class Message < ActiveRecord::Base
   end
 
   def deliver
-    sender.deliver_message(self)
+    Lystonosha::Messageable(sender).deliver_message(self)
   end
 
   def trash(participant)
-    participant.trash_message(self)
+    Lystonosha::Messageable(participant).trash_message(self)
   end
 
   private
