@@ -9,6 +9,10 @@ class Message < ActiveRecord::Base
   validate :subject_or_body_present
   validate :at_least_one_recipient_present
 
+  scope :for_recipient, ->(recipient) do
+    joins(:receipts).merge(recipient.receipts)
+  end
+
   def initialize(*)
     super
     if conversation

@@ -57,17 +57,11 @@ module Lystonosha
 
     def conversations(mailbox = :all)
       Conversation.uniq.in_reverse_chronological_order.
-                   joins(:receipts).merge(receipts(mailbox)).
-                   each do |c|
-                     c.reader = self
-                     c.mailbox = mailbox
-                   end
+                   joins(:receipts).merge(receipts(mailbox))
     end
 
     def conversation(id)
-      Conversation.joins(:receipts).merge(receipts).find(id).tap do |c|
-        c.reader = self
-      end
+      conversations.find(id)
     end
 
     private

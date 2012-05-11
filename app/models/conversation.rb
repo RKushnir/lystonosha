@@ -1,19 +1,21 @@
 class Conversation < ActiveRecord::Base
   attr_protected
-  attr_accessor :reader, :mailbox
 
   has_many :messages, inverse_of: :conversation, order: 'messages.created_at ASC'
-  has_many :receipts, through: :messages
+  has_many :receipts, through: :messages do
+    def recipients
+      includes(:recipient).map(&:recipient).uniq
+    end
+  end
 
   scope :in_reverse_chronological_order, order('conversations.updated_at DESC')
 
-  def messages(*)
-    return super unless reader
-    super.joins(:receipts).merge(reader.receipts(mailbox))
+  def messages_for_participant(participant)
+    messages.for_recipient(participant)
   end
 
   def participants
-    receipts.includes(:recipient).map(&:recipient)
+    receipts.recipients
   end
 
   def mark_as_read(participant)
