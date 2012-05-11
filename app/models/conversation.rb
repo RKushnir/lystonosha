@@ -13,4 +13,8 @@ class Conversation < ActiveRecord::Base
   def participants
     receipts.includes(:recipient).map(&:recipient)
   end
+
+  def mark_as_read(participant)
+    Lystonosha::Messageable(participant).mark_conversation_as_read(self)
+  end
 end

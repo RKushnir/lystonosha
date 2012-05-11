@@ -47,13 +47,13 @@ describe Lystonosha::Messageable do
     end
   end
 
-  describe "#trash_message" do
+  describe "#trash" do
     let(:participant1) { recipients[0] }
     let(:participant2) { recipients[1] }
 
     before do
       message.deliver
-      participant1.trash_message(message)
+      participant1.trash(message)
     end
 
     it "removes message from participant's mailbox" do
@@ -80,6 +80,25 @@ describe Lystonosha::Messageable do
       message2.deliver
       participant1.conversations(:inbox).should == [message2.conversation]
       participant1.conversations(:outbox).should == [message1.conversation]
+    end
+  end
+
+  describe "#mark_as_read" do
+    let(:participant) { recipients[0] }
+
+    it "marks message as read" do
+      message.deliver
+      participant.mark_as_read(message)
+      participant.read?(message).should be_true
+    end
+
+    it "marks conversation as read" do
+      message.deliver
+      participant.mark_as_read(message.conversation)
+      participant.read?(message.conversation).should be_true
+      message.conversation.messages.each do |m|
+        participant.read?(m).should be_true
+      end
     end
   end
 end

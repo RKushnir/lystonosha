@@ -9,4 +9,6 @@ class Receipt < ActiveRecord::Base
   scope :for_recipient, ->(recipient) do
     where(recipient_id: recipient.id, recipient_type: recipient.class.name)
   end
+
+  scope :unread, where(read: false)
 end

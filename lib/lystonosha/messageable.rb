@@ -27,8 +27,25 @@ module Lystonosha
       message.save
     end
 
-    def trash_message(message)
-      message.receipts.merge(receipts).delete_all
+    def trash(item)
+      receipts_for_item(item).delete_all
+    end
+    alias_method :trash_message, :trash
+    alias_method :trash_conversation, :trash
+
+    # item can be conversation or message
+    def mark_as_read(item)
+      receipts_for_item(item).update_all(read: true)
+    end
+    alias_method :mark_message_as_read, :mark_as_read
+    alias_method :mark_conversation_as_read, :mark_as_read
+
+    def mark_message_as_unread(message)
+      receipts_for_item(message).update_all(read: false)
+    end
+
+    def read?(item)
+      receipts_for_item(item).unread.empty?
     end
 
     def receipts(mailbox = nil)
@@ -54,6 +71,10 @@ module Lystonosha
 
     def message(id)
       Message.joins(:receipts).merge(receipts).find(id)
+    end
+
+    def receipts_for_item(item)
+      item.receipts.merge(receipts)
     end
   end
 end

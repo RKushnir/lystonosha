@@ -26,6 +26,13 @@ class Message < ActiveRecord::Base
   def trash(recipient)
     Lystonosha::Messageable(recipient).trash_message(self)
   end
+
+  def mark_as_read(recipient)
+    Lystonosha::Messageable(recipient).mark_message_as_read(self)
+  end
+
+  def mark_as_unread(recipient)
+    Lystonosha::Messageable(recipient).mark_message_as_unread(self)
   end
 
   private
