@@ -38,7 +38,7 @@ module Lystonosha
     end
 
     def conversations(mailbox = nil)
-      Conversation.joins(:receipts).merge(receipts(mailbox)).
+      Conversation.uniq.joins(:receipts).merge(receipts(mailbox)).
                    order('conversations.updated_at DESC').
                    each do |c|
                      c.reader = self
