@@ -56,8 +56,9 @@ module Lystonosha
     end
 
     def conversations(mailbox = :all)
-      Conversation.uniq.in_reverse_chronological_order.
-                   joins(:receipts).merge(receipts(mailbox))
+      Conversation.in_reverse_chronological_order.
+                   merge(receipts(mailbox)).
+                   with_unread_messages_count
     end
 
     def conversation(id)

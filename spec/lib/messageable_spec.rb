@@ -68,18 +68,26 @@ describe Lystonosha::Messageable do
   describe "#conversations" do
     let(:participant1) { Lystonosha::Messageable(create :user) }
     let(:participant2) { Lystonosha::Messageable(create :user) }
+    let(:message1) { participant1.compose_message(recipients: [participant2],
+                                                  subject: 'Greeting',
+                                                  body: 'How are you?') }
+    let(:message2) { participant2.compose_message(recipients: [participant1],
+                                                  subject: 'Greeting',
+                                                  body: 'How are you?') }
+    before do
+      message1.deliver
+      message2.deliver
+    end
 
     it "returns conversations for mailbox" do
-      message1 = participant1.compose_message(recipients: [participant2],
-                                              subject: 'Greeting',
-                                              body: 'How are you?')
-      message1.deliver
-      message2 = participant2.compose_message(recipients: [participant1],
-                                              subject: 'Greeting',
-                                              body: 'How are you?')
-      message2.deliver
       participant1.conversations(:inbox).should == [message2.conversation]
       participant1.conversations(:outbox).should == [message1.conversation]
+    end
+
+    it "sets `read` flag for conversations" do
+      participant1.conversations(:inbox).first.should_not be_read
+      participant1.mark_as_read(participant1.conversations(:inbox).first)
+      participant1.conversations(:inbox).first.should be_read
     end
   end
 

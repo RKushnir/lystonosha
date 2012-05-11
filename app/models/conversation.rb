@@ -9,6 +9,11 @@ class Conversation < ActiveRecord::Base
   end
 
   scope :in_reverse_chronological_order, order('conversations.updated_at DESC')
+  scope :with_unread_messages_count, ->() do
+      joins(:receipts).
+      group('conversations.id').
+      select("conversations.*, #{UnreadMessagesSqlBuilder.build}")
+  end
 
   def messages_for_participant(participant)
     messages.for_recipient(participant)
@@ -20,5 +25,25 @@ class Conversation < ActiveRecord::Base
 
   def mark_as_read(participant)
     Lystonosha::Messageable(participant).mark_conversation_as_read(self)
+  end
+
+  def read?
+    unread_messages_count > 0
+  end
+
+  class UnreadMessagesSqlBuilder
+    def self.build
+      "COUNT(#{unread_messages_condition}) AS unread_messages_count"
+    end
+
+    private
+
+    def self.unread_messages_condition
+      "NULLIF(receipts.read, #{sql_false})"
+    end
+
+    def self.sql_false
+      ActiveRecord::Base.connection.quoted_false
+    end
   end
 end
