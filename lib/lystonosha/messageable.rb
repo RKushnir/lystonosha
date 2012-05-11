@@ -49,13 +49,13 @@ module Lystonosha
       receipts_for_item(item).unread.empty?
     end
 
-    def receipts(mailbox = nil)
+    def receipts(mailbox = :all)
       Receipt.for_recipient(self).instance_eval do
-        mailbox ? where(mailbox: mailbox) : self
+        mailbox == :all ? self : where(mailbox: mailbox)
       end
     end
 
-    def conversations(mailbox = nil)
+    def conversations(mailbox = :all)
       Conversation.uniq.in_reverse_chronological_order.
                    joins(:receipts).merge(receipts(mailbox)).
                    each do |c|
