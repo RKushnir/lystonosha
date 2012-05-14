@@ -84,10 +84,10 @@ describe Lystonosha::Messageable do
       participant1.conversations(:outbox).should == [message1.conversation]
     end
 
-    it "sets `read` flag for conversations" do
-      participant1.conversations(:inbox).first.should_not be_read
+    it "sets `unread` flag for conversations" do
+      participant1.conversations(:inbox).first.should be_unread
       participant1.mark_as_read(participant1.conversations(:inbox).first)
-      participant1.conversations(:inbox).first.should be_read
+      participant1.conversations(:inbox).first.should_not be_unread
     end
   end
 

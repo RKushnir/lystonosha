@@ -27,8 +27,8 @@ class Conversation < ActiveRecord::Base
     Lystonosha::Messageable(participant).mark_conversation_as_read(self)
   end
 
-  def read?
-    unread_messages_count > 0
+  def unread?
+    unread_messages_count == 0
   end
 
   class UnreadMessagesSqlBuilder
