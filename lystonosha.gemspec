@@ -7,11 +7,11 @@ require "lystonosha/version"
 Gem::Specification.new do |s|
   s.name        = "lystonosha"
   s.version     = Lystonosha::VERSION
-  s.authors     = ["TODO: Your name"]
-  s.email       = ["TODO: Your email"]
-  s.homepage    = "TODO"
-  s.summary     = "TODO: Summary of Lystonosha."
-  s.description = "TODO: Description of Lystonosha."
+  s.authors     = ["Roman Kushnir"]
+  s.email       = ["broilerster@gmail.com"]
+  s.homepage    = "https://github.com/RKushnir/lystonosha"
+  s.summary     = "Allows users to send messages to each other."
+  s.description = "Lystonosha(Postman) is a gem for internal communication between site users."
 
   s.files = Dir["{app,config,db,lib}/**/*"] + ["MIT-LICENSE", "Rakefile", "README.rdoc"]
 
