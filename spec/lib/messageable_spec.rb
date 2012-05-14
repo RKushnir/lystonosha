@@ -44,6 +44,16 @@ describe Lystonosha::Messageable do
         sender.deliver_message(message)
         sender.outbox.first.subject.should == message.subject
       end
+
+      it "touches the conversation" do
+        sender.deliver_message(message)
+        conversation = message.conversation
+        last_update_time = conversation.updated_at - 1
+        conversation.update_attribute(:updated_at, last_update_time)
+        reply = sender.compose_message(conversation: conversation, body: 'Reply')
+        sender.deliver_message(reply)
+        conversation.updated_at.should_not == last_update_time
+      end
     end
   end
 

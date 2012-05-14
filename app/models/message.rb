@@ -1,7 +1,7 @@
 class Message < ActiveRecord::Base
   attr_protected
   attr_accessor :recipients
-  belongs_to :conversation, inverse_of: :messages
+  belongs_to :conversation, inverse_of: :messages, touch: true
   belongs_to :sender, polymorphic: true
   has_many :receipts, inverse_of: :message
 
