@@ -24,7 +24,9 @@ module Lystonosha
       message.receipts = Lystonosha::Messageable(message.recipients).
                           map {|r| r.receipts(:inbox).new }.
                           push(receipts(:outbox).new(read: true))
-      message.save
+      message.save.tap do |result|
+        notify_message_delivered(message) if result
+      end
     end
 
     # item can be conversation or message
@@ -73,6 +75,12 @@ module Lystonosha
 
     def receipts_for_item(item)
       item.receipts.merge(receipts)
+    end
+
+    def notify_message_delivered(message)
+      if Lystonosha.message_delivered
+        Lystonosha.message_delivered.call(message)
+      end
     end
   end
 end

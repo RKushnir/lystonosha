@@ -54,6 +54,13 @@ describe Lystonosha::Messageable do
         sender.deliver_message(reply)
         conversation.updated_at.should_not == last_update_time
       end
+
+      it "calls a `message_delivered` callback when present" do
+        delivery_callback = ->(message) {}
+        Lystonosha.stub(message_delivered: delivery_callback)
+        delivery_callback.should_receive(:call).with(message)
+        sender.deliver_message(message)
+      end
     end
   end
 
