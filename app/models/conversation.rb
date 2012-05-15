@@ -23,6 +23,14 @@ class Conversation < ActiveRecord::Base
     receipts.recipients
   end
 
+  def self.find_dialogs(participant1, participant2)
+    participants = [participant1, participant2]
+    Conversation.where(id: common_conversation_ids(*participants)).
+                 joins(:receipts).
+                 group('conversations.id').
+                 having('COUNT(DISTINCT receipts.recipient_id) = 2')
+  end
+
   def mark_as_read(participant)
     Lystonosha::Messageable(participant).mark_conversation_as_read(self)
   end
@@ -45,5 +53,19 @@ class Conversation < ActiveRecord::Base
     def self.sql_false
       ActiveRecord::Base.connection.quoted_false
     end
+  end
+
+  private
+
+  def self.common_conversation_ids(participant1, participant2)
+    both_participants_belong_to_conversation = {
+      receipts:          Receipt.for_recipient_conditions(participant1),
+      receipts_messages: Receipt.for_recipient_conditions(participant2)
+    }
+
+    common_conversation_ids = Receipt.
+      joins(message: { conversation: { messages: :receipts } }).
+      where(both_participants_belong_to_conversation).
+      pluck('conversations.id')
   end
 end

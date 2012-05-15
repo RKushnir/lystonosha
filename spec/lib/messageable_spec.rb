@@ -61,6 +61,18 @@ describe Lystonosha::Messageable do
         delivery_callback.should_receive(:call).with(message)
         sender.deliver_message(message)
       end
+
+      it "uses the same conversation for the same pair of participants" do
+        message1 = sender.compose_message(recipients: [recipients[0]],
+                                          subject: 'Greeting',
+                                          body: 'How are you?')
+        message1.deliver
+        message2 = recipients[0].compose_message(recipients: [sender],
+                                                 subject: 'Hi',
+                                                 body: 'Fine. And you?')
+        message2.deliver
+        message1.conversation.should == message2.conversation
+      end
     end
   end
 

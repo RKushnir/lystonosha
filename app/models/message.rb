@@ -15,11 +15,18 @@ class Message < ActiveRecord::Base
 
   def initialize(*)
     super
+    self.recipients ||= []
+
     if conversation
       self.recipients = conversation.participants - [sender]
     else
-      build_conversation(subject: subject)
-      self.recipients ||= []
+      if recipients.one?
+        self.conversation = find_conversation_by_recipient(recipients.first)
+      end
+
+      unless conversation
+        build_conversation(subject: subject)
+      end
     end
   end
 
@@ -51,5 +58,9 @@ class Message < ActiveRecord::Base
     unless receipts.any? {|r| r.recipient != sender }
       errors.add(:base, 'At least one recipient should be specified')
     end
+  end
+
+  def find_conversation_by_recipient(recipient)
+    Conversation.find_dialogs(sender, recipient).first
   end
 end
