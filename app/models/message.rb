@@ -48,8 +48,8 @@ class Message < ActiveRecord::Base
   end
 
   def at_least_one_recipient_present
-    unless recipients.is_a?(Array) && recipients.any?
-      errors.add(:recipients, 'At least one recipient should be specified')
+    unless receipts.any? {|r| r.recipient != sender }
+      errors.add(:base, 'At least one recipient should be specified')
     end
   end
 end
