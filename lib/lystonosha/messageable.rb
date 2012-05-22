@@ -67,6 +67,10 @@ module Lystonosha
       conversations.find(id)
     end
 
+    def dialogs_with(participant)
+      Conversation.find_dialogs(self, participant)
+    end
+
     def unread_messages_count
       Message.joins(:receipts).merge(receipts.unread).count
     end
