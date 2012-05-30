@@ -47,11 +47,11 @@ class Conversation < ActiveRecord::Base
     private
 
     def self.unread_messages_condition
-      "NULLIF(receipts.read, #{sql_false})"
+      "NULLIF(receipts.read, #{sql_true})"
     end
 
-    def self.sql_false
-      ActiveRecord::Base.connection.quoted_false
+    def self.sql_true
+      ActiveRecord::Base.connection.quoted_true
     end
   end
 
