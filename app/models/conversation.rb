@@ -36,7 +36,7 @@ class Conversation < ActiveRecord::Base
   end
 
   def unread?
-    unread_messages_count == 0
+    unread_messages_count != 0
   end
 
   class UnreadMessagesSqlBuilder
