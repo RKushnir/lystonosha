@@ -32,6 +32,7 @@ module Lystonosha
     # item can be conversation or message
     def trash(item)
       receipts_for_item(item).delete_all
+      item.destroy if item.receipts(true).empty?
     end
     alias_method :trash_message, :trash
     alias_method :trash_conversation, :trash
