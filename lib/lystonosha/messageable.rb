@@ -69,7 +69,7 @@ module Lystonosha
     end
 
     def dialogs_with(participant)
-      Conversation.find_dialogs(self, participant)
+      conversations.find(dialog_ids_with(participant))
     end
 
     def unread_messages_count
@@ -86,6 +86,10 @@ module Lystonosha
       if Lystonosha.message_delivered
         Lystonosha.message_delivered.call(message)
       end
+    end
+
+    def dialog_ids_with(participant)
+      Conversation.find_dialogs(self, participant).pluck('conversations.id')
     end
   end
 end

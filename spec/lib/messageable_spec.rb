@@ -156,4 +156,17 @@ describe Lystonosha::Messageable do
       recipients[0].unread_messages_count.should == 2
     end
   end
+
+  describe "#dialogs_with" do
+    let(:recipient) { Lystonosha::Messageable(create :user) }
+    let(:message) { sender.compose_message(recipients: [recipient],
+                                           subject: 'Greeting',
+                                           body: 'How are you?') }
+
+    before { message.deliver }
+
+    it "returns conversations with unread_messages_count" do
+      recipient.dialogs_with(sender)[0].unread_messages_count.should == 1
+    end
+  end
 end
