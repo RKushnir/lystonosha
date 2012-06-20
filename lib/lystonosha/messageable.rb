@@ -89,7 +89,7 @@ module Lystonosha
     end
 
     def dialog_ids_with(participant)
-      Conversation.find_dialogs(self, participant).pluck('conversations.id')
+      Conversation.find_dialogs(self, participant).pluck('lystonosha_conversations.id')
     end
   end
 end

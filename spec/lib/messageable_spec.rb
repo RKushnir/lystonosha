@@ -96,7 +96,7 @@ describe Lystonosha::Messageable do
     it "removes the entity when no receipts are left" do
       participant2.trash(message)
       sender.trash(message)
-      Message.should_not exist(message.id)
+      Lystonosha::Message.should_not exist(message.id)
     end
   end
 

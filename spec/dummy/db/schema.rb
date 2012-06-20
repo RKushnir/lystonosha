@@ -11,15 +11,15 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120511113537) do
+ActiveRecord::Schema.define(:version => 20120620120026) do
 
-  create_table "conversations", :force => true do |t|
+  create_table "lystonosha_conversations", :force => true do |t|
     t.string   "subject",    :limit => 200
     t.datetime "created_at",                :null => false
     t.datetime "updated_at",                :null => false
   end
 
-  create_table "messages", :force => true do |t|
+  create_table "lystonosha_messages", :force => true do |t|
     t.string   "subject",         :limit => 200
     t.text     "body"
     t.integer  "sender_id"
@@ -29,9 +29,9 @@ ActiveRecord::Schema.define(:version => 20120511113537) do
     t.datetime "updated_at",                     :null => false
   end
 
-  add_index "messages", ["conversation_id"], :name => "index_messages_on_conversation_id"
+  add_index "lystonosha_messages", ["conversation_id"], :name => "index_lystonosha_messages_on_conversation_id"
 
-  create_table "receipts", :force => true do |t|
+  create_table "lystonosha_receipts", :force => true do |t|
     t.integer "recipient_id",                                    :null => false
     t.string  "recipient_type",                                  :null => false
     t.integer "message_id",                                      :null => false
@@ -39,8 +39,8 @@ ActiveRecord::Schema.define(:version => 20120511113537) do
     t.string  "mailbox",        :limit => 10
   end
 
-  add_index "receipts", ["message_id"], :name => "index_receipts_on_message_id"
-  add_index "receipts", ["recipient_id", "recipient_type", "mailbox"], :name => "index_receipts_on_recipient_id_and_recipient_type_and_mailbox"
+  add_index "lystonosha_receipts", ["message_id"], :name => "index_lystonosha_receipts_on_message_id"
+  add_index "lystonosha_receipts", ["recipient_id", "recipient_type", "mailbox"], :name => "index_lystonosha_receipts_on_rec_id_rec_type_and_mailbox"
 
   create_table "users", :force => true do |t|
     t.string   "name"
