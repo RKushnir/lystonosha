@@ -1,6 +1,6 @@
 module Lystonosha
   class Conversation < ActiveRecord::Base
-    attr_protected
+    attr_accessible :subject
 
     has_many :messages, inverse_of: :conversation,
       order: Message.arel_table[:created_at].asc

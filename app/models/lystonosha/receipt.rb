@@ -1,6 +1,7 @@
 module Lystonosha
   class Receipt < ActiveRecord::Base
-    attr_protected
+    attr_accessible :mailbox, :message_id, :read, :recipient, :recipient_id,
+      :recipient_type
 
     belongs_to :message, inverse_of: :receipts
     belongs_to :recipient, polymorphic: true
