@@ -13,11 +13,8 @@ module Lystonosha
     scope :in_reverse_chronological_order, order(arel_table[:updated_at].desc)
 
     def self.with_unread_messages_count
-      sql_function = Arel::Nodes::NamedFunction
       receipts = Receipt.arel_table
-
-      null_if_read = sql_function.new("NULLIF", [receipts[:read], true])
-      unread_messages_count = sql_function.new("COUNT", [null_if_read]).
+      unread_messages_count = count_null_if(receipts[:read], true).
         as('unread_messages_count')
 
       joins(:receipts).
@@ -67,6 +64,12 @@ module Lystonosha
 
     def self.select_with_self(extra_columns)
       select([arel_table[Arel.star], extra_columns].flatten)
+    end
+
+    def self.count_null_if(expression1, expression2)
+      sql_function = Arel::Nodes::NamedFunction
+      null_if = sql_function.new("NULLIF", [expression1, expression2])
+      sql_function.new("COUNT", [null_if])
     end
   end
 end
