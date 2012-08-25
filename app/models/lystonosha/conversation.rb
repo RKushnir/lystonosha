@@ -2,18 +2,27 @@ module Lystonosha
   class Conversation < ActiveRecord::Base
     attr_protected
 
-    has_many :messages, inverse_of: :conversation, order: 'lystonosha_messages.created_at ASC'
+    has_many :messages, inverse_of: :conversation,
+      order: Message.arel_table[:created_at].asc
     has_many :receipts, through: :messages do
       def recipients
         includes(:recipient).map(&:recipient).uniq
       end
     end
 
-    scope :in_reverse_chronological_order, order('lystonosha_conversations.updated_at DESC')
-    scope :with_unread_messages_count, ->() do
-        joins(:receipts).
-        group('lystonosha_conversations.id').
-        select("lystonosha_conversations.*, #{UnreadMessagesSqlBuilder.build}")
+    scope :in_reverse_chronological_order, order(arel_table[:updated_at].desc)
+
+    def self.with_unread_messages_count
+      sql_function = Arel::Nodes::NamedFunction
+      receipts = Receipt.arel_table
+
+      null_if_read = sql_function.new("NULLIF", [receipts[:read], true])
+      unread_messages_count = sql_function.new("COUNT", [null_if_read]).
+        as('unread_messages_count')
+
+      joins(:receipts).
+      group('lystonosha_conversations.id').
+      select_with_self(unread_messages_count)
     end
 
     def messages_for_participant(participant)
@@ -25,11 +34,13 @@ module Lystonosha
     end
 
     def self.find_dialogs(participant1, participant2)
+      receipts = Receipt.arel_table
       participants = [participant1, participant2]
-      Conversation.where(id: common_conversation_ids(*participants)).
-                   joins(:receipts).
-                   group('lystonosha_conversations.id').
-                   having('COUNT(DISTINCT lystonosha_receipts.recipient_id) = 2')
+
+      where(id: common_conversation_ids(*participants)).
+      joins(:receipts).
+      group('lystonosha_conversations.id').
+      having(receipts[:recipient_id].count(true).eq(2))
     end
 
     def mark_as_read(participant)
@@ -38,22 +49,6 @@ module Lystonosha
 
     def unread?
       unread_messages_count != 0
-    end
-
-    class UnreadMessagesSqlBuilder
-      def self.build
-        "COUNT(#{unread_messages_condition}) AS unread_messages_count"
-      end
-
-      private
-
-      def self.unread_messages_condition
-        "NULLIF(lystonosha_receipts.read, #{sql_true})"
-      end
-
-      def self.sql_true
-        ActiveRecord::Base.connection.quoted_true
-      end
     end
 
     private
@@ -68,6 +63,10 @@ module Lystonosha
         joins(message: { conversation: { messages: :receipts } }).
         where(both_participants_belong_to_conversation).
         pluck('lystonosha_conversations.id')
+    end
+
+    def self.select_with_self(extra_columns)
+      select([arel_table[Arel.star], extra_columns].flatten)
     end
   end
 end
